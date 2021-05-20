@@ -11,15 +11,18 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class StateMachine implements Receiver {
 
     private static EventLog eventLog;
     private static int tries = 0;
     private static Label display;
-    private static String currentEffect;
+    private static List<String> currentEffects;
     private static StringProperty numInput;
+    private static String betrag;
 
     private static State currentState;
 
@@ -49,13 +52,13 @@ public class StateMachine implements Receiver {
                 .orElse(null)
         );
 
-        eventLog.log(new LogElement(eventName, currentEffect));
+        eventLog.log(new LogElement(eventName, currentEffects.toString()));
         e.consume();
     }
 
     public void apply(StateEvent event) {
 
-        currentEffect = "";
+        currentEffects = new ArrayList<>();
 
         switch(currentState) {
             case READY -> {
@@ -125,6 +128,8 @@ public class StateMachine implements Receiver {
                     currentState = State.MONEY_OUTPUT;
                     currentState.entry.invoke();
                 } else if(event.equals(AFTER)) {
+                    karteEinziehen();
+                    buchungStornieren();
                     currentState = State.READY;
                     currentState.entry.invoke();
                 }
@@ -141,29 +146,39 @@ public class StateMachine implements Receiver {
     }
 
     private static void prKarte() {
-        currentEffect = "Pr\u00fcfe Karte";
+        currentEffects.add("Pr\u00fcfe Karte");
     }
 
     private static void prPIN() {
-        currentEffect = "Pr\u00fcfe PIN " + numInput.get();
+        currentEffects.add("Pr\u00fcfe PIN: " + numInput.get());
         numInput.setValue("");
     }
 
     private static void karteAusgeben() {
-        currentEffect = "Karte Ausgeben";
+        currentEffects.add("Karte ausgeben");
+        display.setText("Bitte entnehmen Sie Ihre Karte");
     }
 
     private static void geldBereitstellen() {
-        currentEffect = "Geld bereitstellen";
+        currentEffects.add("Geld bereitstellen");
     }
 
     private static void prBetrag() {
-        currentEffect = "Pr\u00fcfe Betrag " + numInput.get();
+        betrag = numInput.get();
         numInput.setValue("");
+        currentEffects.add("Pr\u00fcfe Betrag: " + betrag);
     }
 
     private static void kontoBelasten() {
-        currentEffect = "Belaste Konto";
+        currentEffects.add("Konto belastet mit " + betrag);
+    }
+
+    private static void karteEinziehen() {
+        currentEffects.add("Karte Einziehen");
+    }
+
+    private static void buchungStornieren() {
+        currentEffects.add("Buchung wird storniert. Betrag " + betrag + " wird nicht abgebucht");
     }
 
     // --State config

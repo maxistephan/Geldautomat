@@ -22,7 +22,9 @@ public class InputStage extends Stage {
 
     public InputStage(EventLog eventLog, Stage parent) {
         AnchorPane root = new AnchorPane();
-        setScene(new Scene(root, parent.getWidth() * 1.5, parent.getHeight() * 0.9));
+        setScene(new Scene(root));
+        setWidth(parent.getWidth() * 1.5);
+        setHeight(parent.getHeight() * 0.9);
         setX(parent.getX() + parent.getWidth());
         setY(parent.getY());
         setTitle("State Info & User Input");
@@ -34,12 +36,12 @@ public class InputStage extends Stage {
 
         TableColumn<LogElement, String> eventCol = new TableColumn<>("Event");
         eventCol.setCellValueFactory(new PropertyValueFactory<>("event"));
-        eventCol.setPrefWidth(200d);
+        eventCol.setPrefWidth(getWidth() / 3);
         eventCol.setSortable(false);
 
         TableColumn<LogElement, String> effectCol = new TableColumn<>("Effect");
         effectCol.setCellValueFactory(new PropertyValueFactory<>("effect"));
-        effectCol.setPrefWidth(300d);
+        effectCol.setPrefWidth(getWidth() - eventCol.getWidth());
         effectCol.setSortable(false);
 
         eventList.getColumns().add(eventCol);
@@ -51,6 +53,7 @@ public class InputStage extends Stage {
                 new Button(StateEvent.INVALID.getAction()),
                 new Button(StateEvent.KARTE_ENTNEHMEN.getAction()),
                 new Button(StateEvent.GELD_ENTNEHMEN.getAction()),
+                new Button(StateEvent.AFTER.getAction()),
                 new Button(StateEvent.OK.getAction())
         };
 

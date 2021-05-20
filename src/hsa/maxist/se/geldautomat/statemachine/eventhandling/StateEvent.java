@@ -7,7 +7,7 @@ public enum StateEvent {
     INVALID("invalid"),
     KARTE_EINGEBEN("Karte eingeben"),
     OK("Ok"),
-    AFTER("After"),
+    AFTER("After(15s)"),
     GELD_ENTNEHMEN("Geld entnehmen"),
     KARTE_ENTNEHMEN("Karte entnehmen");
 
